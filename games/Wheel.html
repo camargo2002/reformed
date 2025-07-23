@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Wheel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f1436;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 80px;
+    }
+
+.stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #080c27;
+  padding: 15px 50px;
+  box-shadow: 0 0 10px #00000050;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.stake-header .left .logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.stake-header .center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.balance {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.deposit-input {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.stake-header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+/* Corrige o espaçamento do conteúdo */
+body {
+  padding-top: 70px;
+}
+
+
+    .controls {
+      margin: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .controls select, .controls input, .controls button {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: #1e293b;
+      color: white;
+    }
+
+    .controls button {
+      background-color: #22c55e;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border: 16px solid #1e293b;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wheel::after {
+      content: '';
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #0f172a;
+      z-index: 2;
+      position: absolute;
+    }
+
+    .wheel-result {
+      position: absolute;
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+      z-index: 3;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid #f43f5e;
+      z-index: 4;
+    }
+
+    .labels {
+      margin-top: 30px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .label-box {
+      background: #1e293b;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<header class="stake-header">
+  <div class="left">
+    <span class="logo" onclick="window.location.href='../index.html'">REFORMED</span>
+  </div>
+  <div class="center">
+    <div class="balance">
+      <span id="navbarBalance">R$ 0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo">
+    </div>
+    <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="right">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" class="icon" />
+  </div>
+</header>
+
+
+  <div class="controls">
+    <input type="number" id="bet" placeholder="Valor da Aposta" value="10" min="1" />
+    <select id="risk">
+      <option value="baixo">Baixo</option>
+      <option value="medio">Médio</option>
+      <option value="alto">Alto</option>
+    </select>
+    <select id="segments">
+      <option>10</option>
+      <option>20</option>
+      <option>30</option>
+      <option>40</option>
+      <option>50</option>
+    </select>
+    <button id="spin">Girar</button>
+  </div>
+
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"><div class="wheel-result" id="wheelResult"></div></div>
+  </div>
+
+  <div class="labels" id="labels"></div>
+
+  <script>
+    const wheel = document.getElementById("wheel");
+    const wheelResult = document.getElementById("wheelResult");
+    const riskInput = document.getElementById("risk");
+    const segmentsInput = document.getElementById("segments");
+    const betInput = document.getElementById("bet");
+    const spinButton = document.getElementById("spin");
+    const labelsContainer = document.getElementById("labels");
+    const navbarBalance = document.getElementById("navbarBalance");
+    const creditsInput = document.getElementById("credits");
+    const depositBtn = document.getElementById("depositBtn");
+
+    let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
+    let rotaçãoAcumulada = 0;
+
+    const payouts = {
+      baixo: {
+        10: [{payout: 0.00, count: 2}, {payout: 1.20, count: 7}, {payout: 1.50, count: 1}],
+        20: [{payout: 0.00, count: 4}, {payout: 1.20, count: 14}, {payout: 1.50, count: 2}],
+        30: [{payout: 0.00, count: 6}, {payout: 1.20, count: 21}, {payout: 1.50, count: 3}],
+        40: [{payout: 0.00, count: 8}, {payout: 1.20, count: 28}, {payout: 1.50, count: 4}],
+        50: [{payout: 0.00, count: 10}, {payout: 1.20, count: 35}, {payout: 1.50, count: 5}]
+      },
+      medio: {
+        10: [{payout: 0.00, count: 5}, {payout: 1.50, count: 2}, {payout: 1.90, count: 1}, {payout: 2.00, count: 1}, {payout: 3.00, count: 1}],
+        20: [{payout: 0.00, count: 10}, {payout: 1.50, count: 4}, {payout: 1.80, count: 2}, {payout: 2.00, count: 2}, {payout: 3.00, count: 2}],
+        30: [{payout: 0.00, count: 15}, {payout: 1.50, count: 6}, {payout: 1.70, count: 1}, {payout: 2.00, count: 6}, {payout: 3.00, count: 1}, {payout: 4.00, count: 1}],
+        40: [{payout: 0.00, count: 20}, {payout: 1.50, count: 8}, {payout: 1.60, count: 1}, {payout: 2.00, count: 7}, {payout: 3.00, count: 4}],
+        50: [{payout: 0.00, count: 25}, {payout: 1.50, count: 13}, {payout: 2.00, count: 8}, {payout: 3.00, count: 3}, {payout: 5.00, count: 1}]
+      },
+      alto: {
+        10: [{payout: 0.00, count: 9}, {payout: 9.90, count: 1}],
+        20: [{payout: 0.00, count: 19}, {payout: 19.80, count: 1}],
+        30: [{payout: 0.00, count: 29}, {payout: 29.70, count: 1}],
+        40: [{payout: 0.00, count: 39}, {payout: 39.60, count: 1}],
+        50: [{payout: 0.00, count: 49}, {payout: 49.50, count: 1}]
+      }
+    };
+
+    function corPorPayout(p) {
+      return p === 0 ? "#1e293b" : p >= 9 ? "#f43f5e" : p >= 5 ? "#3b82f6" : p >= 4 ? "#f97316" : p >= 3 ? "#8b5cf6" : p >= 2 ? "#fde047" : p >= 1.5 ? "#22c55e" : "#e2e8f0";
+    }
+
+    function gerarSegmentos(risco, total) {
+      const config = payouts[risco][total];
+      return config.flatMap(item => Array(item.count).fill({ payout: item.payout, color: corPorPayout(item.payout) }));
+    }
+
+    function desenharRoda(segmentos) {
+      const angle = 360 / segmentos.length;
+      let gradient = 'conic-gradient(';
+      labelsContainer.innerHTML = '';
+      let currentAngle = 0;
+      const unique = [...new Set(segmentos.map(s => s.payout))].sort((a,b) => a-b);
+      segmentos.forEach((s, i) => {
+        const start = currentAngle.toFixed(2);
+        const end = (currentAngle + angle).toFixed(2);
+        gradient += `${s.color} ${start}deg ${end}deg${i < segmentos.length - 1 ? ', ' : ''}`;
+        currentAngle += angle;
+      });
+      wheel.style.background = gradient;
+      unique.forEach(p => {
+        const l = document.createElement('div');
+        l.className = 'label-box';
+        l.innerText = `${p.toFixed(2)}x`;
+        l.style.borderTop = `4px solid ${corPorPayout(p)}`;
+        labelsContainer.appendChild(l);
+      });
+    }
+
+    function girarRoda(segmentos, aposta) {
+      const anguloPorSegmento = 360 / segmentos.length;
+      const deslocamento = Math.random() * 360;
+      rotaçãoAcumulada += 360 * 5 + deslocamento;
+      wheel.style.transform = `rotate(${rotaçãoAcumulada}deg)`;
+
+      setTimeout(() => {
+        const anguloFinal = rotaçãoAcumulada % 360;
+        const index = Math.floor((segmentos.length - (anguloFinal / anguloPorSegmento)) % segmentos.length);
+        const resultado = segmentos[index];
+        const ganho = (aposta * resultado.payout).toFixed(2);
+        wheelResult.textContent = `${resultado.payout.toFixed(2)}x`;
+        balance += resultado.payout > 0 ? aposta * (resultado.payout - 1) : -aposta;
+        localStorage.setItem("sharedBalance", balance.toFixed(2));
+        navbarBalance.textContent = balance.toFixed(2);
+      }, 4200);
+    }
+
+    function atualizarRoda() {
+      const risco = riskInput.value;
+      const total = parseInt(segmentsInput.value);
+      const segmentos = gerarSegmentos(risco, total);
+      desenharRoda(segmentos);
+      return segmentos;
+    }
+
+    let segmentosAtuais = atualizarRoda();
+
+    riskInput.onchange = () => segmentosAtuais = atualizarRoda();
+    segmentsInput.onchange = () => segmentosAtuais = atualizarRoda();
+
+    spinButton.onclick = () => {
+      const aposta = parseFloat(betInput.value);
+      if (isNaN(aposta) || aposta <= 0 || aposta > balance) {
+        alert("Valor inválido");
+        return;
+      }
+      segmentosAtuais = atualizarRoda();
+      setTimeout(() => girarRoda(segmentosAtuais, aposta), 200);
+    };
+
+depositBtn.onclick = () => {
+  const v = parseFloat(creditsInput.value);
+  if (!isNaN(v) && v > 0) {
+    balance += v;
+    localStorage.setItem("sharedBalance", balance.toFixed(2));
+    navbarBalance.textContent = "R$ " + balance.toFixed(2);
+  }
+};
+
+
+navbarBalance.textContent = "R$ " + balance.toFixed(2);
+
+  </script>
+</body>
+</html>

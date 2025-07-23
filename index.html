@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFORMED</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Kristen ITC;
+      background-color: #0f1436;
+      color: #fff;
+    }
+
+    .stake-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #080c27;
+      padding: 15px 50px;
+      box-shadow: 0 0 10px #00000050;
+      z-index: 10;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+    }
+
+    .stake-header .left .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .stake-header .center {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .balance {
+      background-color: #2a325f;
+      padding: 12px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .deposit-input {
+      width: 80px;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      background-color: #2a325f;
+      color: white;
+    }
+
+    .deposit-btn {
+      background-color: #4558ff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .deposit-btn:hover {
+      background-color: #1a5ed9;
+    }
+
+    .stake-header .right {
+      display: flex;
+      gap: 20px;
+    }
+
+    .icon {
+      cursor: pointer;
+      filter: brightness(1.2);
+    }
+
+    .main-container {
+      display: flex;
+      margin-top: 70px; /* altura do header */
+    }
+
+    .chat-container {
+      width: 300px;
+      background-color: #080c27;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #1a1e3a;
+      height: calc(100vh - 70px);
+      box-sizing: border-box;
+    }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    #chat-form {
+      display: flex;
+      gap: 5px;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #2a325f;
+      color: white;
+    }
+
+    #chat-form button {
+      padding: 8px;
+      background: #4558ff;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .game-arc {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      perspective: 1000px;
+    }
+
+    .game-card {
+      position: absolute;
+      top: 50%;
+      left: 43%;
+      width: 100px;
+      height: 100px;
+      transform-origin: center center;
+      background: none;
+      border: none;
+    }
+
+    .game-card img {
+      width: 250%;
+      height: 250%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+    }
+
+    .game-card:hover img {
+      transform: scale(1.1);
+    }
+.content-area {
+  flex: 1;
+  padding: 20px 30px;
+  box-sizing: border-box;
+}
+
+.game-title {
+  font-size: 32px;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+  text-align: center;
+  margin: 60px 0 -80px; /* topo, laterais, baixo */
+}
+.popup-container {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-box {
+  background: #0b1239;
+  padding: 30px;
+  width: 400px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 0 10px #00000080;
+  color: white;
+}
+
+.popup-section {
+  margin-top: 20px;
+}
+
+.popup-block {
+  background: #1a1e3a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.popup-block input {
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px;
+  background: #2a325f;
+  border: none;
+  color: white;
+  border-radius: 4px;
+}
+
+.popup-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background: #4558ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-btn-alt {
+  background: #5567ff;
+}
+
+.logout-btn {
+  background: #aa3c3c;
+  width: 100%;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: gray;
+  margin-bottom: 10px;
+}
+
+
+
+  </style>
+</head>
+<div id="profilePopup" class="popup-container">
+  <div class="popup-box">
+    <h2>Settings</h2>
+
+    <div class="popup-section">
+      <h3>Profile</h3>
+      <div class="popup-block">
+        <div class="profile-avatar"></div>
+        <div class="profile-name">Owner</div>
+        <button class="popup-btn">Edit Profile</button>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <h3>Security</h3>
+      <div class="popup-block">
+        <strong>Password</strong>
+        <button class="popup-btn">Change Password</button>
+      </div>
+      <div class="popup-block">
+        <strong>Email Address</strong>
+        <input type="email" value="Owner@reformed.com" disabled />
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+          <button class="popup-btn">Change Email</button>
+          <button class="popup-btn popup-btn-alt">Resend Verification</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <button class="popup-btn logout-btn">Logout</button>
+    </div>
+
+    <span class="popup-close" onclick="closePopup()">×</span>
+  </div>
+</div>
+
+<body>
+  <header class="stake-header">
+    <div class="left">
+      <span class="logo">REFORMED</span>
+    </div>
+    <div class="center">
+      <div class="balance">
+        <span id="balanceDisplay">$0.00</span>
+        <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Coin">
+      </div>
+      <input id="depositValue" class="deposit-input" type="number" value="500" min="1" step="1">
+      <button class="deposit-btn" onclick="addFunds()">Depositar</button>
+    </div>
+    <div class="right">
+      <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" class="icon" />
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="chat-container">
+      <div id="chat-messages"></div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off" />
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  <div class="content-area">
+    <div class="game-title">REFORMED ORIGINALS</div>
+    <div class="game-arc" id="gameArc"></div>
+  </div>
+
+  <script>
+    // saldo
+    function updateBalanceDisplay() {
+      let balance = parseFloat(localStorage.getItem("sharedBalance"));
+      if (isNaN(balance)) {
+        balance = 1000;
+        localStorage.setItem("sharedBalance", balance.toFixed(8));
+      }
+      document.getElementById("balanceDisplay").textContent = "$ " + balance.toFixed(2);
+    }
+
+    function addFunds() {
+      const input = document.getElementById("depositValue");
+      const added = parseFloat(input?.value);
+      if (isNaN(added) || added <= 0) {
+        alert("Insira um valor válido.");
+        return;
+      }
+      let current = parseFloat(localStorage.getItem("sharedBalance")) || 0;
+      let newBalance = current + added;
+      localStorage.setItem("sharedBalance", newBalance.toFixed(8));
+      updateBalanceDisplay();
+    }
+
+    updateBalanceDisplay();
+
+    // arco de jogos
+    const games = [
+      { icon: "img/dice.png", link: "games/Dice.html" },
+      { icon: "img/mines.png", link: "games/Mines.html" },
+      { icon: "img/blackjack.png", link: "games/Blackjack.html" },
+      { icon: "img/keno.png", link: "games/Keno.html" },
+      { icon: "img/tower.png", link: "games/Tower.html" },
+      { icon: "img/wheel.png", link: "games/Wheel.html" },
+      { icon: "img/limbo.png", link: "games/Limbo.html" },
+      { icon: "img/rockpaper.png", link: "games/Rps.html" },
+      { icon: "img/coinflip.png", link: "games/Coinflip.html" }
+    ];
+
+    const container = document.getElementById("gameArc");
+    const radius = 80;
+    const spacing = 150;
+    const total = games.length;
+    const center = (total - 1) / 2;
+
+    games.forEach((game, i) => {
+      const offset = i - center;
+      const x = offset * spacing;
+      const y = -Math.cos((offset / center) * (Math.PI / 2)) * radius + radius;
+
+      const card = document.createElement("a");
+      card.className = "game-card";
+      card.href = game.link;
+      card.style.transform = `translate(${x}px, ${y}px)`;
+      card.innerHTML = `<img src="${game.icon}" alt="game">`;
+
+      container.appendChild(card);
+    });
+
+    // chat local
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    chatForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      const msgElement = document.createElement('div');
+      msgElement.textContent = `Você: ${msg}`;
+      chatMessages.appendChild(msgElement);
+      chatInput.value = '';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+    document.querySelector('.icon').addEventListener('click', () => {
+  document.getElementById('profilePopup').style.display = 'flex';
+});
+
+function closePopup() {
+  document.getElementById('profilePopup').style.display = 'none';
+}
+
+  </script>
+</body>
+</html>

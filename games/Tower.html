@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tower</title>
+
+  <!-- CSS unificado -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f1436;
+      color: #ffffff;
+    }
+
+    .tower-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* PAINEL LATERAL */
+    .tower-sidebar {
+      width: 300px;
+      background-color: #0a1031;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .mode-selector {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    .mode-selector button {
+      flex: 1;
+      background-color: #334155;
+      border: none;
+      color: #ffffff;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .mode-selector button.active {
+      background-color: #475569;
+    }
+
+    .shared-balance {
+      font-weight: bold;
+      font-size: 16px;
+      color: #cbd5e1;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+      color: #cbd5e1;
+    }
+
+    .bet-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bet-input-group input {
+      flex: 1;
+      padding: 10px;
+      background-color: #334155;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+    }
+
+    .currency {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .bet-modifiers {
+      display: flex;
+      gap: 10px;
+    }
+
+    .bet-modifiers button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background-color: #334155;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .bet-modifiers input {
+      flex: 2;
+      padding: 10px;
+      background-color: #334155;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #334155;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    /* BOTÕES */
+    .start-button,
+    .cashout-button {
+      padding: 12px;
+      background-color: #22c55e;
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+
+    .cashout-button {
+      background-color: #facc15;
+      color: #0f172a;
+    }
+
+    .start-button:hover,
+    .cashout-button:hover {
+      filter: brightness(1.1);
+    }
+
+    .multiplier-display {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #22c55e;
+    }
+
+    /* TORRE CENTRAL */
+    .tower-grid-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #0f1436;
+      padding: 30px;
+    }
+
+    .tower-grid {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 10px;
+    }
+
+    .tower-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tower-cell {
+      width: 60px;
+      height: 60px;
+      background-color: #334155;
+      border: 2px solid #475569;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .tower-cell:hover {
+      background-color: #475569;
+    }
+
+    .tower-cell.revealed.success {
+      background-color: #22c55e;
+    }
+
+    .tower-cell.revealed.fail {
+      background-color: #ef4444;
+    }
+
+.stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #080c27;
+  padding: 15px 50px;
+  box-shadow: 0 0 10px #00000050;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.stake-header .left .logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.stake-header .center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.balance {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.deposit-input {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.stake-header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+/* Para compensar o header fixo */
+body {
+  padding-top: 70px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- HEADER/NAVBAR -->
+  <header class="stake-header">
+  <div class="left">
+    <span class="logo" onclick="window.location.href='../index.html'">REFORMED</span>
+  </div>
+  <div class="center">
+    <div class="balance">
+      <span id="navbarBalance">R$ 0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo">
+    </div>
+    <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="right">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" class="icon" />
+  </div>
+</header>
+
+
+  <div class="tower-container">
+    <!-- PAINEL LATERAL -->
+    <div class="tower-sidebar">
+      <div class="shared-balance">
+        Saldo: <span id="balance">R$0.00</span>
+      </div>
+
+      <label for="betAmount">Valor da Aposta</label>
+      <div class="bet-input-group">
+        <input type="number" id="betAmount" min="0.01" step="0.01" value="10">
+        <span class="currency">USD</span>
+      </div>
+      <div class="bet-modifiers">
+        <button onclick="halfBet()">½</button>
+        <button onclick="doubleBet()">2×</button>
+      </div>
+
+      <label for="difficulty">Dificuldade</label>
+      <select id="difficulty">
+        <option value="easy">Fácil</option>
+        <option value="medium">Médio</option>
+        <option value="hard">Difícil</option>
+        <option value="expert">Perito</option>
+        <option value="master">Mestre</option>
+      </select>
+
+      <!-- BOTÕES -->
+      <button class="start-button" id="startBtn" onclick="startGame()">Apostar</button>
+      <button id="cashoutButton" class="cashout-button" onclick="cashout()" style="display:none;">Cashout</button>
+      <div id="currentMultiplier" class="multiplier-display">x1.00</div>
+    </div>
+
+    <!-- TORRE -->
+    <div class="tower-grid-container">
+      <div id="towerGrid" class="tower-grid"></div>
+    </div>
+  </div>
+
+  <!-- JS unificado -->
+  <script>
+    let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
+    let gameActive = false;
+    let currentMultiplier = 1;
+    let currentLevel = 0;
+    let safeIndexes = [];
+
+    const balanceDisplay = document.getElementById("balance");
+    const towerGrid = document.getElementById("towerGrid");
+    const betInput = document.getElementById("betAmount");
+    const cashoutButton = document.getElementById("cashoutButton");
+    const difficultySelect = document.getElementById("difficulty");
+    const multiplierDisplay = document.getElementById("currentMultiplier");
+
+    // NAVBAR
+    const navbarBalance = document.getElementById("navbarBalance");
+    const creditsInput = document.getElementById("credits");
+    const depositBtn = document.getElementById("depositBtn");
+
+    const modeConfig = {
+      easy:   { cells: 4, safe: 3, multipliers: [1.13, 1.28, 1.46, 1.67, 1.92, 2.22, 2.57, 2.99, 3.50] },
+      medium: { cells: 3, safe: 2, multipliers: [1.19, 1.42, 1.71, 2.06, 2.48, 2.99, 3.60, 4.34, 5.24] },
+      hard:   { cells: 2, safe: 1, multipliers: [1.71, 2.93, 5.00, 8.57, 14.68, 25.17, 43.18, 74.07, 127.08] },
+      expert: { cells: 3, safe: 1, multipliers: [1.58, 2.50, 3.96, 6.27, 9.92, 15.70, 24.83, 39.23, 61.96] },
+      master: { cells: 4, safe: 1, multipliers: [2.31, 5.35, 12.40, 28.75, 66.67, 154.55, 358.33, 831.25, 1927.92] }
+    };
+
+    function updateBalance() {
+      if (balanceDisplay) balanceDisplay.textContent = "R$" + balance.toFixed(2);
+      navbarBalance.textContent = "R$ " + balance.toFixed(2);
+      localStorage.setItem("sharedBalance", balance.toFixed(8));
+    }
+
+    // DEPÓSITO MANUAL PELA NAVBAR
+depositBtn.addEventListener("click", () => {
+  const value = parseFloat(creditsInput.value);
+  if (!isNaN(value) && value > 0) {
+    balance += value;
+    updateBalance();
+  }
+});
+
+
+    function halfBet() {
+      betInput.value = (parseFloat(betInput.value) / 2).toFixed(2);
+    }
+
+    function doubleBet() {
+      betInput.value = (parseFloat(betInput.value) * 2).toFixed(2);
+    }
+
+    function startGame(betOverride) {
+      if (gameActive) return;
+
+      const bet = betOverride !== undefined ? betOverride : parseFloat(betInput.value);
+      if (isNaN(bet) || bet <= 0 || bet > balance) return alert("Aposta inválida!");
+
+      const difficulty = difficultySelect.value;
+      const config = modeConfig[difficulty];
+
+      balance -= bet;
+      updateBalance();
+
+      gameActive = true;
+      currentLevel = 0;
+      currentMultiplier = 1;
+      cashoutButton.style.display = "block";
+      multiplierDisplay.textContent = "x1.00";
+      towerGrid.innerHTML = "";
+      safeIndexes = [];
+
+      for (let i = 0; i < 9; i++) {
+        const row = document.createElement("div");
+        row.className = "tower-row";
+        const safeSet = [];
+        while (safeSet.length < config.safe) {
+          let r = Math.floor(Math.random() * config.cells);
+          if (!safeSet.includes(r)) safeSet.push(r);
+        }
+        safeIndexes.push(safeSet);
+
+        for (let j = 0; j < config.cells; j++) {
+          const cell = document.createElement("div");
+          cell.className = "tower-cell";
+          cell.dataset.level = i;
+          cell.dataset.index = j;
+          cell.onclick = () => handleCellClick(cell, config, bet);
+          row.appendChild(cell);
+        }
+        towerGrid.appendChild(row);
+      }
+      showCurrentRow();
+    }
+
+    function showCurrentRow() {
+      const rows = document.querySelectorAll(".tower-row");
+      rows.forEach((row, i) => {
+        row.style.opacity = i === currentLevel ? "1" : "0.3";
+        row.style.pointerEvents = i === currentLevel ? "auto" : "none";
+      });
+    }
+
+    function handleCellClick(cell, config, bet) {
+      if (!gameActive) return;
+
+      const level = parseInt(cell.dataset.level);
+      const index = parseInt(cell.dataset.index);
+      const isSafe = safeIndexes[level].includes(index);
+
+      cell.classList.add("revealed", isSafe ? "success" : "fail");
+
+      if (!isSafe) return endGame(false, bet);
+
+      currentLevel++;
+      currentMultiplier = config.multipliers[level];
+      multiplierDisplay.textContent = "x" + currentMultiplier.toFixed(2);
+
+      if (currentLevel === 9) return endGame(true, bet);
+
+      showCurrentRow();
+    }
+
+    function endGame(won, bet) {
+      gameActive = false;
+      cashoutButton.style.display = "none";
+
+      if (won) {
+        const reward = bet * currentMultiplier;
+        balance += reward;
+        updateBalance();
+      }
+
+      revealFullBoard();
+    }
+
+    function revealFullBoard() {
+      const rows = document.querySelectorAll(".tower-row");
+      rows.forEach((row, level) => {
+        const cells = row.children;
+        for (let i = 0; i < cells.length; i++) {
+          const isSafe = safeIndexes[level].includes(i);
+          cells[i].classList.add("revealed", isSafe ? "success" : "fail");
+          cells[i].onclick = null;
+        }
+        row.style.opacity = "1";
+      });
+    }
+
+    function cashout() {
+      if (!gameActive || currentLevel === 0) return;
+      const bet = parseFloat(betInput.value);
+      const reward = bet * currentMultiplier;
+      balance += reward;
+      updateBalance();
+      endGame(true, bet);
+    }
+
+    updateBalance();
+  </script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedra Papel Tesoura</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f1436;
+      color: #ffffff;
+    }
+
+    .game-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .sidebar {
+      width: 300px;
+      background-color: #0a1031;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 10px;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #334155;
+      color: #ffffff;
+    }
+
+    .multiplier-options button {
+      margin-right: 10px;
+      padding: 5px 10px;
+      background-color: #334155;
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .multiplier-options button:hover {
+      background-color: #475569;
+    }
+
+    .choice-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .choice-buttons button {
+      flex: 1;
+      margin-right: 5px;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #334155;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .choice-buttons button:last-child {
+      margin-right: 0;
+    }
+
+    .choice-buttons button:hover {
+      background-color: #475569;
+    }
+
+    .play-btn {
+      margin-top: 10px;
+      padding: 12px;
+      background-color: #22c55e;
+      border: none;
+      border-radius: 8px;
+      color: #0f172a;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .play-btn:hover {
+      background-color: #16a34a;
+    }
+
+    .balance {
+      margin-top: auto;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .game-area {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #resultArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .card {
+      width: 100px;
+      height: 140px;
+      background-color: #334155;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .card-label {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #94a3b8;
+    }
+
+    #resultMessage {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #22c55e;
+    }
+
+    .selected-move {
+      background-color: #0ea5e9 !important;
+      font-weight: bold;
+    }
+
+.stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #080c27;
+  padding: 15px 50px;
+  box-shadow: 0 0 10px #00000050;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.stake-header .left .logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.stake-header .center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.balance {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.deposit-input {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.stake-header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+body {
+  padding-top: 70px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- HEADER/NAVBAR -->
+<header class="stake-header">
+  <div class="left">
+    <span class="logo" onclick="window.location.href='../index.html'">REFORMED</span>
+  </div>
+  <div class="center">
+    <div class="balance">
+      <span id="navbarBalance">R$ 0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo">
+    </div>
+    <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="right">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" class="icon" />
+  </div>
+</header>
+
+
+  <div class="game-container">
+    <div class="sidebar">
+      <label for="betAmount">Valor da Aposta</label>
+      <input type="number" id="betAmount" min="0" step="0.00000001" value="0.00">
+      <div class="multiplier-options">
+        <button onclick="adjustBet(0.5)">½</button>
+        <button onclick="adjustBet(2)">2×</button>
+      </div>
+
+      <label>Escolher uma mão</label>
+      <div class="choice-buttons">
+        <button id="btn-pedra" onclick="chooseMove('pedra')">🪨 Pedra</button>
+        <button id="btn-papel" onclick="chooseMove('papel')">📄 Papel</button>
+        <button id="btn-tesoura" onclick="chooseMove('tesoura')">✂️ Tesoura</button>
+      </div>
+
+      <button onclick="playGame()" class="play-btn">Apostar</button>
+
+      <div class="balance">Saldo: <span id="balanceDisplay">1000.00</span> USD</div>
+    </div>
+
+    <div class="game-area">
+      <h2>Resultado</h2>
+      <div id="resultArea">
+        <div class="card-label">Você</div>
+        <div id="playerMove" class="card">?</div>
+        <div class="card-label">Bot</div>
+        <div id="botMove" class="card">?</div>
+      </div>
+      <div id="resultMessage"></div>
+    </div>
+  </div>
+
+  <script>
+    let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000.00;
+    let playerChoice = null;
+
+    const balanceDisplay = document.getElementById("balanceDisplay");
+    const betAmountInput = document.getElementById("betAmount");
+    const resultMessage = document.getElementById("resultMessage");
+    const playerMoveEl = document.getElementById("playerMove");
+    const botMoveEl = document.getElementById("botMove");
+
+    const navbarBalance = document.getElementById("navbarBalance");
+    const creditsInput = document.getElementById("credits");
+    const depositBtn = document.getElementById("depositBtn");
+
+    function updateBalanceDisplay() {
+      const fixed = balance.toFixed(2);
+      if (balanceDisplay) balanceDisplay.textContent = fixed;
+      if (navbarBalance) navbarBalance.textContent = "R$ " + fixed;
+      localStorage.setItem("sharedBalance", fixed);
+    }
+
+    function adjustBet(multiplier) {
+      let value = parseFloat(betAmountInput.value);
+      if (!isNaN(value)) {
+        betAmountInput.value = (value * multiplier).toFixed(8);
+      }
+    }
+
+    function chooseMove(move) {
+      playerChoice = move;
+      resultMessage.textContent = "";
+
+      document.querySelectorAll(".choice-buttons button").forEach(btn => {
+        btn.classList.remove("selected-move");
+      });
+
+      const selectedBtn = document.getElementById(`btn-${move}`);
+      if (selectedBtn) selectedBtn.classList.add("selected-move");
+
+      playerMoveEl.textContent = emoji(move);
+      botMoveEl.textContent = "?";
+    }
+
+    function playGame() {
+      const bet = parseFloat(betAmountInput.value);
+      if (isNaN(bet) || bet <= 0) return alert("Digite um valor de aposta válido.");
+      if (bet > balance) return alert("Saldo insuficiente.");
+      if (!playerChoice) return alert("Escolha Pedra, Papel ou Tesoura.");
+
+      const moves = ["pedra", "papel", "tesoura"];
+      const botChoice = moves[Math.floor(Math.random() * 3)];
+      botMoveEl.textContent = emoji(botChoice);
+
+      const result = determineWinner(playerChoice, botChoice);
+
+      if (result === "win") {
+        balance += bet;
+        resultMessage.textContent = `Você ganhou! 🤑 + ${bet.toFixed(2)}`;
+        resultMessage.style.color = "#22c55e";
+      } else if (result === "lose") {
+        balance -= bet;
+        resultMessage.textContent = `Você perdeu! 😞 - ${bet.toFixed(2)}`;
+        resultMessage.style.color = "#ef4444";
+      } else {
+        resultMessage.textContent = "Empate! 😐";
+        resultMessage.style.color = "#eab308";
+      }
+
+      updateBalanceDisplay();
+    }
+
+    function determineWinner(player, bot) {
+      if (player === bot) return "draw";
+      if (
+        (player === "pedra" && bot === "tesoura") ||
+        (player === "papel" && bot === "pedra") ||
+        (player === "tesoura" && bot === "papel")
+      ) return "win";
+      return "lose";
+    }
+
+    function emoji(move) {
+      switch (move) {
+        case "pedra": return "🪨";
+        case "papel": return "📄";
+        case "tesoura": return "✂️";
+        default: return "?";
+      }
+    }
+
+    if (depositBtn) {
+      depositBtn.addEventListener("click", () => {
+        const value = parseFloat(creditsInput.value);
+        if (!isNaN(value) && value > 0) {
+          balance += value;
+          updateBalanceDisplay();
+        }
+      });
+    }
+
+    updateBalanceDisplay();
+  </script>
+</body>
+</html>

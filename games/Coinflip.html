@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coinflip</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f1436;
+      color: white;
+      padding-top: 80px;
+    }
+
+   .stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #080c27;
+  padding: 15px 50px;
+  box-shadow: 0 0 10px #00000050;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.stake-header .left .logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.stake-header .center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.balance {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.deposit-input {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.stake-header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+body {
+  padding-top: 70px;
+}
+
+
+    .game-container {
+      max-width: 820px;
+      margin: 30px auto;
+      background-color: #0a1031;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .bet-section input {
+      background-color: #334155;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      width: 100px;
+      text-align: center;
+    }
+
+    .btn, .cashout {
+      background: linear-gradient(to bottom, #22c55e, #16a34a);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 16px;
+    }
+
+    .choice-buttons button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      margin: 10px;
+      transform: scale(1);
+      transition: transform 0.2s ease;
+    }
+
+    .choice-buttons button:active {
+      transform: scale(0.9);
+    }
+
+    #headsBtn { background-color: #f97316; }
+    #tailsBtn { background-color: #3b82f6; }
+
+    .coin3d-container {
+      perspective: 800px;
+      width: 140px;
+      height: 140px;
+      margin: 30px auto;
+    }
+
+    .coin3d {
+      width: 100%;
+      height: 100%;
+      border: 24px solid gray;
+      border-radius: 50%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+      position: relative;
+    }
+
+    .history {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .history span {
+      width: 20px;
+      height: 20px;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .orange { background-color: #f97316; }
+    .blue { background-color: #3b82f6; }
+
+    .message {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #22c55e;
+    }
+  </style>
+</head>
+<body>
+<header class="stake-header">
+  <div class="left">
+    <span class="logo" onclick="window.location.href='../index.html'">REFORMED</span>
+  </div>
+  <div class="center">
+    <div class="balance">
+      R$ <span id="navbarBalance">0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" />
+    </div>
+    <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="right">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" class="icon" />
+  </div>
+</header>
+
+
+  <div class="game-container">
+    <h1>Coinflip</h1>
+    <div class="balance">Saldo: $<span id="balance">1000.00</span></div>
+
+    <div class="bet-section">
+      <label for="betAmount">Aposta: $</label>
+      <input type="number" id="betAmount" step="0.01" value="10">
+      <button class="btn" onclick="startGame()" id="betBtn">Apostar</button>
+    </div>
+
+    <div class="choice-buttons">
+      <button id="headsBtn" onclick="flip('heads')">Heads 🟠</button>
+      <button id="tailsBtn" onclick="flip('tails')">Tails 🔷</button>
+    </div>
+
+    <div class="coin3d-container">
+      <div class="coin3d" id="coin"></div>
+    </div>
+
+    <button class="cashout" onclick="cashout()" id="cashoutBtn" style="display:none; margin-top: 20px;">Cashout</button>
+
+    <div class="message" id="message"></div>
+    <div class="message" id="profit"></div>
+    <div class="history" id="history"></div>
+  </div>
+
+  <script>
+    let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
+    let betAmount = 0;
+    let multiplier = 1.96;
+    let streak = 0;
+    let playing = false;
+    let totalRotation = 0;
+
+    const balanceEl = document.getElementById("balance");
+    const navbarBalance = document.getElementById("navbarBalance");
+    const messageEl = document.getElementById("message");
+    const profitEl = document.getElementById("profit");
+    const coinEl = document.getElementById("coin");
+    const historyEl = document.getElementById("history");
+    const headsBtn = document.getElementById("headsBtn");
+    const tailsBtn = document.getElementById("tailsBtn");
+    const cashoutBtn = document.getElementById("cashoutBtn");
+    const betBtn = document.getElementById("betBtn");
+    const creditsInput = document.getElementById("credits");
+    const depositBtn = document.getElementById("depositBtn");
+
+    function updateBalanceDisplay() {
+      balanceEl.textContent = balance.toFixed(2);
+      navbarBalance.textContent = "R$ " + balance.toFixed(2);
+    }
+
+    function startGame() {
+      if (playing) return;
+
+      betAmount = parseFloat(document.getElementById("betAmount").value);
+      if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
+        alert("Aposta inválida.");
+        return;
+      }
+
+      balance -= betAmount;
+      updateBalanceDisplay();
+
+      historyEl.innerHTML = "";
+      profitEl.textContent = "";
+      streak = 0;
+      multiplier = 1.96;
+      playing = true;
+      messageEl.textContent = "Escolha Heads ou Tails.";
+      headsBtn.style.display = "inline-block";
+      tailsBtn.style.display = "inline-block";
+      cashoutBtn.style.display = "inline-block";
+      betBtn.disabled = true;
+      coinEl.style.borderColor = "#888";
+      coinEl.style.transform = "rotateY(0deg)";
+    }
+
+    function flip(choice) {
+      if (!playing) return;
+
+      const result = Math.random() < 0.5 ? 'heads' : 'tails';
+      const color = result === 'heads' ? '#f97316' : '#3b82f6';
+      const dotClass = result === 'heads' ? 'orange' : 'blue';
+
+      totalRotation += 180;
+      coinEl.style.transform = `rotateY(${totalRotation}deg)`;
+
+      setTimeout(() => {
+        coinEl.style.borderColor = color;
+        addToHistory(dotClass);
+
+        if (choice === result) {
+          streak++;
+          const lucro = betAmount * (multiplier - 1);
+          messageEl.textContent = `Acertou! Streak: ${streak} | Mult: ${(multiplier).toFixed(2)}x`;
+          profitEl.textContent = `Lucro: +$${lucro.toFixed(2)}`;
+          multiplier *= 2;
+        } else {
+          messageEl.textContent = `Errou. Você perdeu $${betAmount.toFixed(2)}.`;
+          profitEl.textContent = `Lucro: -$${betAmount.toFixed(2)}`;
+          resetGame();
+        }
+      }, 600);
+    }
+
+    function cashout() {
+      if (!playing || streak === 0) {
+        messageEl.textContent = "Nada para sacar.";
+        return;
+      }
+
+      const lucro = betAmount * (multiplier / 2);
+      balance += lucro;
+      updateBalanceDisplay();
+      messageEl.textContent = `Você sacou $${lucro.toFixed(2)} com multiplicador ${(multiplier/2).toFixed(2)}x!`;
+      profitEl.textContent = `Lucro: +$${(lucro - betAmount).toFixed(2)}`;
+      resetGame();
+    }
+
+    function resetGame() {
+      playing = false;
+      streak = 0;
+      multiplier = 1.96;
+      headsBtn.style.display = "none";
+      tailsBtn.style.display = "none";
+      cashoutBtn.style.display = "none";
+      betBtn.disabled = false;
+    }
+
+    function addToHistory(classe) {
+      const dot = document.createElement("span");
+      dot.className = classe;
+      historyEl.prepend(dot);
+      if (historyEl.children.length > 20) {
+        historyEl.removeChild(historyEl.lastChild);
+      }
+    }
+
+    depositBtn.onclick = () => {
+      const v = parseFloat(creditsInput.value);
+      if (!isNaN(v) && v > 0) {
+        balance += v;
+        updateBalanceDisplay();
+      }
+    };
+
+    updateBalanceDisplay();
+  </script>
+</body>
+</html>

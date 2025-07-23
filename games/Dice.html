@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dice</title>
+  <style>
+    /* Navbar CSS from Mines Game */
+.navbar {
+  background-color: #080c27;
+  padding: 15px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 50px;
+  box-shadow: 0 0 10px #00000050;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.balance-box {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+#credits {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar-icons img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  filter: brightness(1.2);
+  transition: filter 0.3s;
+}
+
+.navbar-icons img:hover {
+  filter: brightness(0.8);
+}
+
+.balance-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+    /* Existing Dice Game CSS */
+:root {
+  --slider-gradient: linear-gradient(to right, #22c55e 0%, #16a34a 100%);
+}
+
+body {
+  margin: 0;
+  padding-top: 60px; /* space for navbar */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0f1436;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: auto;
+}
+
+.container {
+  background: #0a1031;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 0 12px #00000050;
+  width: 600px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: stretch;
+}
+
+h1 {
+  text-align: center;
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.balance {
+  font-size: 18px;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.bet-section {
+  background: #334155;
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bet-section input[type="number"] {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  background-color: #475569;
+  color: #fff;
+  text-align: center;
+}
+
+.bet-section label {
+  font-size: 15px;
+  color: #cfd7e5;
+  margin-right: 4px;
+}
+
+.bet-section button,
+.play-button {
+  background: linear-gradient(to bottom, #1a5ed9, #1650bd);
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #09224e;
+  transition: all 0.25s ease-in-out;
+}
+
+.bet-section button:hover,
+.play-button:hover {
+  background: linear-gradient(to bottom, #1c65ec, #185bd6);
+  box-shadow: 0 2px 0 #0c2c64;
+  transform: translateY(1px);
+}
+
+.slider-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+}
+
+input[type="range"] {
+  width: 100%;
+  appearance: none;
+  height: 16px;
+  border-radius: 20px;
+  background-color: #1e293b;
+  box-shadow: inset 0 0 0 4px #334155;
+  outline: none;
+  background-image: var(--slider-gradient);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: #22c55e;
+  cursor: pointer;
+  border: 2px solid #0f172a;
+  margin-top: -4px;
+  position: relative;
+  z-index: 2;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: #22c55e;
+  cursor: pointer;
+  border: 2px solid #0f172a;
+}
+
+.multiplier {
+  font-size: 20px;
+  font-weight: bold;
+  color: #243080;
+  text-align: center;
+}
+
+.play-button {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  background: linear-gradient(to bottom, #1a5ed9, #1650bd);
+  border-radius: 10px;
+  font-size: 17px;
+  padding: 14px;
+  box-shadow: 0 4px 0 #09224e;
+  font-weight: bold;
+  transition: 0.25s ease-in-out;
+}
+
+.play-button:hover {
+  background: linear-gradient(to bottom, #1c65ec, #185bd6);
+  transform: translateY(1px);
+}
+
+.result-indicator {
+  position: absolute;
+  top: -18px;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: #fff;
+  color: #0f172a;
+  font-weight: bold;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 3;
+  pointer-events: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.result-indicator.win {
+  background: #22c55e;
+  color: #0f172a;
+}
+
+.result-indicator.lose {
+  background: #ef4444;
+  color: #ffffff;
+}
+  </style>
+</head>
+<body>
+<!-- Navbar -->
+<header class="navbar">
+  <div class="logo" onclick="location.href='../index.html'">REFORMED</div>
+  <div class="navbar-center">
+    <div class="balance-box">
+      R$ <span id="navbarBalance">0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo" class="balance-icon" />
+    </div>
+    <input type="number" id="credits" value="500" />
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="navbar-icons">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" id="profileBtn" />
+  </div>
+</header>
+
+
+  <!-- Dice Game -->
+  <div class="container">
+    <h1>DICE</h1>
+    <div class="balance">Saldo: R$ <span id="balance">1000.00</span></div>
+
+    <div class="bet-section">
+      <label for="betAmount">Aposta: $</label>
+      <input type="number" id="betAmount" value="10" min="0" step="0.01" />
+      <button id="toggleMode">Roll Over</button>
+    </div>
+
+    <div class="slider-section">
+      <div>Chance de vitória: <span id="chanceDisplay">50.05%</span></div>
+      <input type="range" id="chance" min="1" max="99" value="50" />
+    </div>
+
+    <div class="multiplier">Multiplicador: <span id="multiplier">2.00x</span></div>
+
+    <button id="playBtn" class="play-button">Jogar</button>
+  </div>
+
+  <script>
+let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
+let isRollOver = true;
+
+const balanceDisplay = document.getElementById('balance');
+const chanceInput = document.getElementById('chance');
+const multiplierDisplay = document.getElementById('multiplier');
+const chanceDisplay = document.getElementById('chanceDisplay');
+const playButton = document.getElementById('playBtn');
+const toggleModeButton = document.getElementById('toggleMode');
+const navbarBalance = document.getElementById('navbarBalance');
+const creditsInput = document.getElementById('credits');
+const depositBtn = document.getElementById('depositBtn');
+
+function updateMultiplier() {
+  const chance = parseFloat(chanceInput.value);
+  const rtp = 0.999;
+  const chanceReal = isRollOver ? (100 - chance) : chance;
+
+  // Se for exatamente 50.05%, força para 2.00x
+  if (chanceReal.toFixed(2) === "50.05") {
+    multiplierDisplay.textContent = '2.00x';
+  } else {
+    const payout = (100 / chanceReal) * rtp;
+    multiplierDisplay.textContent = payout.toFixed(3) + 'x';
+  }
+
+  chanceDisplay.textContent = chance.toFixed(2) + '%';
+}
+
+
+function updateSliderGradient() {
+  const value = parseFloat(chanceInput.value);
+  const isOver = isRollOver;
+  let leftColor = isOver ? '#e74c3c' : '#27ae60';
+  let rightColor = isOver ? '#27ae60' : '#e74c3c';
+  document.documentElement.style.setProperty('--slider-gradient',
+    `linear-gradient(to right, ${leftColor} 0%, ${leftColor} ${value}%, ${rightColor} ${value}%, ${rightColor} 100%)`
+  );
+}
+
+function updateBalanceDisplay() {
+  balanceDisplay.textContent = balance.toFixed(2);
+  navbarBalance.textContent = balance.toFixed(2);
+  localStorage.setItem("sharedBalance", balance.toFixed(2));
+}
+
+depositBtn.addEventListener('click', () => {
+  const v = parseFloat(creditsInput.value);
+  if(!isNaN(v)&&v>0){balance+=v;updateBalanceDisplay();}
+});
+
+function playGame() {
+  const bet = parseFloat(document.getElementById('betAmount').value);
+  const roll = Math.random()*100;
+  const result = document.createElement('div');
+  result.classList.add('result-indicator');
+  result.textContent = roll.toFixed(2);
+  result.style.left = `calc(${roll}% - 20px)`;
+  const win = (isRollOver && roll>chanceInput.value)||(!isRollOver&&roll<chanceInput.value);
+  if(win){const chanceReal = isRollOver?(100-chanceInput.value):chanceInput.value;
+    const payout=(100/chanceReal)*(1-0.01);balance+=bet*(payout-1);result.classList.add('win');
+  } else {balance-=bet;result.classList.add('lose');}
+  document.querySelector('.slider-section').appendChild(result);
+  updateBalanceDisplay();
+  setTimeout(()=>result.remove(),2000);
+  updateSliderGradient();
+}
+
+chanceInput.oninput = ()=>{updateMultiplier();updateSliderGradient();};
+toggleModeButton.onclick = ()=>{isRollOver=!isRollOver;toggleModeButton.textContent=isRollOver? 'Roll Over':'Roll Under';updateSliderGradient();updateMultiplier();};
+playButton.onclick = playGame;
+
+updateMultiplier();updateSliderGradient();updateBalanceDisplay();
+  </script>
+</body>
+</html>

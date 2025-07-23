@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mines</title>
+  <style>
+    body {
+      background: #0f1436;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      padding-top: 60px;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 10px;
+      margin: 30px 0;
+    }
+
+    .tile {
+      width: 60px;
+      height: 60px;
+      background: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tile.revealed {
+      background: #475569;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #0a1031;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #00000050;
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+
+    .controls button {
+      background-color: #1a5ed9;
+      color: #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .controls button:hover {
+      background-color: #2c70f0;
+    }
+
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      z-index: 9999;
+      display: none;
+    }
+
+    #popup.show {
+      display: block;
+    }
+
+    #popup-message {
+      font-size: 18px;
+      font-weight: bold;
+      color: #22c55e;
+      margin-bottom: 12px;
+    }
+
+    #close-popup {
+      background-color: #334155;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    #close-popup:hover {
+      background-color: #475569;
+    }
+
+.stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #080c27;
+  padding: 15px 50px;
+  box-shadow: 0 0 10px #00000050;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.stake-header .left .logo {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.stake-header .center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.balance {
+  background-color: #2a325f;
+  padding: 12px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.deposit-input {
+  width: 80px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a325f;
+  color: white;
+}
+
+.deposit-btn {
+  background-color: #4558ff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.deposit-btn:hover {
+  background-color: #1a5ed9;
+}
+
+.stake-header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+  </style>
+</head>
+<body>
+<header class="stake-header">
+  <div class="left">
+    <span class="logo" onclick="window.location.href='../index.html'">REFORMED</span>
+  </div>
+  <div class="center">
+    <div class="balance">
+      <span id="navbarBalance">R$ 0.00</span>
+      <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo">
+    </div>
+    <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
+    <button class="deposit-btn" id="depositBtn">Depositar</button>
+  </div>
+  <div class="right">
+    <img src="https://img.icons8.com/ios-glyphs/24/ffffff/user--v1.png" alt="Perfil" class="icon">
+  </div>
+</header>
+
+    
+      <h1>Mines</h1>
+    
+      <div class="controls">
+        <label for="betAmount">Aposta:</label>
+        <input type="number" id="betAmount" placeholder="10" value="10">
+        <span>USD</span>
+        <label for="mineCount">Mines:</label>
+        <select id="mineCount"></select>
+        <button id="startBtn">Apostar</button>
+      </div>
+    
+      <div class="balance-text">
+        <strong>Saldo:</strong> <span id="balance">0.00</span> USD
+      </div>
+    
+      <div id="board"></div>
+    
+      <div id="popup" class="popup hidden">
+        <div class="popup-content">
+          <span id="popup-message"></span>
+          <button id="close-popup">Fechar</button>
+        </div>
+      </div>
+    
+      <script>
+        const boardSize = 5;
+        const totalTiles = 25;
+        let board = [];
+        let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
+        let minePositions = new Set();
+        let diamondsFound = 0;
+        let totalDiamonds = 0;
+        let gameOver = false;
+        let gameStarted = false;
+        let currentBet = 0;
+    
+        const payoutTable = {
+  1: {
+    1:  1.01,  2:  1.08,  3:  1.12,  4:  1.18,  5:  1.24,
+    6:  1.30,  7:  1.37,  8:  1.46,  9:  1.55, 10:  1.65,
+   11:  1.77, 12:  1.92, 13:  2.06, 14:  2.25, 15:  2.47,
+   16:  2.75, 17:  3.09, 18:  3.54, 19:  4.12, 20:  4.95,
+   21:  6.19, 22:  8.25, 23: 12.38, 24: 24.75
+  },
+
+  2: {
+    1:  1.08,  2:  1.17,  3:  1.29,  4:  1.41,  5:  1.56,
+    6:  1.74,  7:  1.94,  8:  2.18,  9:  2.47, 10:  2.83,
+   11:  3.26, 12:  3.81, 13:  4.50, 14:  5.40, 15:  6.60,
+   16:  8.25, 17: 10.61, 18: 14.14, 19: 19.80, 20: 29.70,
+   21: 49.50, 22: 99.00, 23: 297.00, 24:  0.00
+  },
+
+  3: {
+    1:  1.12,  2:  1.29,  3:  1.48,  4:  1.71,  5:  2.00,
+    6:  2.35,  7:  2.79,  8:  3.35,  9:  4.07, 10:  5.00,
+   11:  6.26, 12:  7.52, 13:  9.13, 14: 10.35, 15: 13.80,
+   16: 18.97, 17: 27.11, 18: 40.66, 19: 65.06, 20:113.85,
+   21:227.70, 22:569.25, 23:2277.00, 24:   0.00
+  },
+
+  4: {
+    1:  1.18,  2:  1.41,  3:  1.71,  4:  2.09,  5:  2.58,
+    6:  3.39,  7:  4.09,  8:  5.26,  9:  6.88, 10:  9.17,
+   11: 12.51, 12: 17.52, 13: 25.30, 14: 35.00, 15: 59.64,
+   16: 99.39, 17:178.91, 18:357.81, 19:834.90, 20:2504.00,
+   21:12523.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+  5: {
+    1:  1.24,  2:  1.56,  3:  2.00,  4:  2.58,  5:  3.39,
+    6:  4.52,  7:  6.14,  8:  8.50,  9: 11.34, 10: 15.26,
+   11: 20.52, 12: 27.12, 13: 35.38, 14: 44.07, 15: 59.64,
+   16: 99.39, 17:178.91, 18:357.81, 19:834.90, 20:2504.00,
+   21:12523.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+  6: {
+    1:  1.30,  2:  1.74,  3:  2.35,  4:  3.23,  5:  4.52,
+    6:  6.46,  7:  9.44,  8: 14.17,  9: 21.89, 10: 35.03,
+   11: 58.38, 12:102.17, 13:189.75,14:379.50,15:834.90,
+   16:2087.00,17:6261.00,18:25047.00,19:175329.00,
+   20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+  7: {
+    1:  1.37,  2:  1.94,  3:  2.79,  4:  4.09,  5:  6.14,
+    6:  9.44,  7: 14.95,  8: 24.47,  9: 41.60, 10: 73.95,
+   11:138.66,12:277.33,13:600.87,14:1442.00,15:3965.00,
+   16:13219.00,17:59486.00,18:475893.00,
+   19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+  8: {
+    1:  1.46,  2:  2.18,  3:  3.35,  4:  5.26,  5:  8.50,
+    6: 14.17,  7: 24.47,  8: 44.05,  9: 83.20, 10:166.40,
+   11:356.56,12:831.98,13:2163.00,14:6489.00,15:23794.00,
+   16:118973.00,17:1070759.00,
+   18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+  9: {
+    1:  1.55,  2:  2.47,  3:  4.07,  4:  6.88,  5: 12.04,
+    6: 21.89,  7: 41.60,  8: 83.20,  9:176.80, 10:404.10,
+   11:1010.00,12:2828.00,13:9193.00,14:36773.00,15:202254.00,
+   16:202254.00, // ← confirmar se mesmo valor nas cols 15 e 16
+   17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 10: {
+    1:  1.65,  2:  2.83,  3:  5.00,  4:  9.17,  5: 17.52,
+    6: 35.03,  7: 73.95,  8:166.40,  9:404.10,10:1077.00,
+   11:3232.00,12:11314.00,13:49031.00,14:294188.00,15:3236072.00,
+   16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 11: {
+    1:  1.77,  2:  3.26,  3:  6.26,  4: 12.51,  5: 26.27,
+    6: 58.38,  7:138.66,  8:356.56,  9:1010.00,10:3232.00,
+   11:12123.00,12:56574.00,13:367735.00,14:4412826.00,
+   15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 12: {
+    1:  1.90,  2:  3.81,  3:  7.96,  4: 17.52,  5: 40.87,
+    6:102.17,  7:277.33,  8:831.98,  9:2828.00,10:11314.00,
+   11:56574.00,12:396022.00,13:5148297.00,
+   14:   0.00,15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 13: {
+    1:  2.06,  2:  4.50,  3: 10.35,  4: 25.30,  5: 66.41,
+    6:189.75,  7:600.87,  8:2163.00,  9:9193.00,10:49031.00,
+   11:367735.00,12:   0.00, // ← confirmar se há valor aqui ou é zero
+   13:   0.00,14:   0.00,15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 14: {
+    1:  2.25,  2:  5.40,  3: 13.80,  4: 37.95,  5:113.85,
+    6:379.50,  7:1442.00,  8:6489.00,  9:36773.00,10:294188.00,
+   11:4412826.00,
+   12:   0.00,13:   0.00,14:   0.00,15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 15: {
+    1:  2.47,  2:  6.60,  3: 18.97,  4: 59.64,  5:208.72,
+    6:3965.00,  7:23794.00,  8:202254.00,  9:3236072.00,
+   10:   0.00,11:   0.00,12:   0.00,13:   0.00,14:   0.00,15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 16: {
+    1:  2.75,  2:  8.25,  3: 27.11,  4: 99.39,  5:417.45,
+    6:13219.00,  7:118973.00,  8:202254.00,  9:   0.00,
+   10:   0.00,11:   0.00,12:   0.00,13:   0.00,14:   0.00,15:   0.00,16:   0.00,17:   0.00,18:   0.00,19:   0.00,20:   0.00,21:   0.00,22:   0.00,23:   0.00,24:   0.00
+  },
+
+ 17: {
+    1:  3.09,  2: 10.61,  3:40.66,  4:178.91,  5:939.26,
+    6:6261.00,  7:59486.00,  8:1070759.00,
+    // depois disso zeros
+    9: 0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 18: {
+    1:  3.54,  2: 14.14,  3:65.06,  4:357.81,  5:2504.00,
+    6:25047.00,  7:475893.00,
+    8: 0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 19: {
+    1:  4.12,  2: 19.80,  3:113.85,  4:834.90,  5:8766.00,
+    6:175329.00,
+    7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 20: {
+    1:  4.95,  2: 29.70,  3:227.70,  4:2504.00,  5:52598.00,
+    // só esses cinco
+    6:0.00,7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 21: {
+    1:  6.19,  2: 49.50,  3:569.25,  4:12523.00,
+    // só até col4
+    5:0.00,6:0.00,7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 22: {
+    1:  8.25,  2: 99.00,  3:2277.00,
+    // só até col3
+    4:0.00,5:0.00,6:0.00,7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 23: {
+    1: 12.38,  2:297.00,
+    // só até col2
+    3:0.00,4:0.00,5:0.00,6:0.00,7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  },
+
+ 24: {
+    1: 24.75,
+    // só col1
+    2:0.00,3:0.00,4:0.00,5:0.00,6:0.00,7:0.00,8:0.00,9:0.00,10:0.00,11:0.00,12:0.00,13:0.00,14:0.00,15:0.00,16:0.00,17:0.00,18:0.00,19:0.00,20:0.00,21:0.00,22:0.00,23:0.00,24:0.00
+  }
+};
+
+    
+        const navbarBalance = document.getElementById("navbarBalance");
+        const creditsInput = document.getElementById("credits");
+        const depositBtn = document.getElementById("depositBtn");
+    
+        function updateNavbarBalance() {
+          if (navbarBalance) navbarBalance.textContent = "R$ " + balance.toFixed(2);
+        }
+    
+        if (depositBtn) {
+          depositBtn.addEventListener("click", () => {
+            const value = parseFloat(creditsInput.value);
+            if (!isNaN(value) && value > 0) {
+              balance += value;
+              updateBalance();
+            }
+          });
+        }
+    
+        function showPopup(text) {
+          const popup = document.getElementById('popup');
+          const message = document.getElementById('popup-message');
+          message.textContent = text;
+          popup.style.display = 'block';
+        }
+    
+        function hidePopup() {
+          const popup = document.getElementById('popup');
+          popup.style.display = 'none';
+        }
+    
+        function startGame() {
+          if (gameStarted) {
+            cashOut();
+            return;
+          }
+    
+          const bet = parseFloat(document.getElementById('betAmount').value);
+          const mineCountEl = document.getElementById('mineCount');
+          const mineCount = parseInt(mineCountEl.value);
+          const boardEl = document.getElementById('board');
+    
+          if (isNaN(bet) || bet <= 0 || bet > balance) {
+            alert('Aposta inválida.');
+            return;
+          }
+    
+          document.getElementById('startBtn').textContent = 'Sacar';
+    
+          boardEl.innerHTML = '';
+          board = [];
+          minePositions.clear();
+          diamondsFound = 0;
+          totalDiamonds = totalTiles - mineCount;
+          gameOver = false;
+          gameStarted = true;
+          currentBet = bet;
+    
+          while (minePositions.size < mineCount) {
+            minePositions.add(Math.floor(Math.random() * totalTiles));
+          }
+    
+          for (let i = 0; i < totalTiles; i++) {
+            const tile = document.createElement('div');
+            tile.classList.add('tile');
+            tile.dataset.index = i;
+            tile.onclick = () => revealTile(tile, mineCount);
+            board.push({ el: tile, hasMine: minePositions.has(i), revealed: false });
+            boardEl.appendChild(tile);
+          }
+    
+          balance -= bet;
+          updateBalance();
+        }
+    
+        function revealTile(tile, mineCount) {
+          if (gameOver || !gameStarted) return;
+    
+          const index = parseInt(tile.dataset.index);
+          const cell = board[index];
+          if (cell.revealed) return;
+          cell.revealed = true;
+          tile.classList.add('revealed');
+    
+          if (cell.hasMine) {
+            tile.textContent = '💣';
+            gameOver = true;
+            gameStarted = false;
+            revealAll();
+            document.getElementById('startBtn').textContent = 'Apostar';
+            showPopup('Você perdeu!');
+          } else {
+            tile.textContent = '💎';
+            diamondsFound++;
+          }
+        }
+    
+        function cashOut() {
+          const mineCount = parseInt(document.getElementById('mineCount').value);
+    
+          if (diamondsFound <= 0) {
+            showPopup('Você precisa encontrar pelo menos 1 diamante antes de sacar.');
+            return;
+          }
+    
+          const multiplier = payoutTable[mineCount]?.[diamondsFound];
+          if (typeof multiplier !== 'number' || isNaN(multiplier)) {
+            showPopup('Multiplicador inválido. Não foi possível sacar.');
+            return;
+          }
+    
+          const win = currentBet * multiplier;
+          balance += win;
+    
+          showPopup(`Você sacou ${win.toFixed(2)} USD com ${diamondsFound} diamantes!`);
+          revealAll();
+          gameStarted = false;
+          document.getElementById('startBtn').textContent = 'Apostar';
+          updateBalance();
+        }
+    
+        function revealAll() {
+          board.forEach((cell) => {
+            if (!cell.revealed) {
+              cell.el.classList.add('revealed');
+              cell.el.textContent = cell.hasMine ? '💣' : '💎';
+            }
+            cell.revealed = true;
+          });
+        }
+    
+        function updateBalance() {
+          document.getElementById('balance').textContent = balance.toFixed(2);
+          localStorage.setItem("sharedBalance", balance.toFixed(2));
+          updateNavbarBalance();
+        }
+    
+        window.onload = () => {
+          const mineSelect = document.getElementById('mineCount');
+          if (mineSelect && mineSelect.options.length === 0) {
+            for (let i = 1; i <= 24; i++) {
+              const opt = document.createElement('option');
+              opt.value = i;
+              opt.textContent = i;
+              mineSelect.appendChild(opt);
+            }
+          }
+          document.getElementById('startBtn').addEventListener('click', startGame);
+          document.getElementById('close-popup')?.addEventListener('click', hidePopup);
+          updateBalance();
+        };
+      </script>
+    </body>
+    </html>
+    
