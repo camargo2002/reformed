@@ -29,7 +29,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
-      width: 100%;
+      width: 50%;
       max-width: 1200px;
       justify-content: center;
       align-items: flex-start;
@@ -54,7 +54,7 @@
 
     .sidebar input,
     .sidebar select {
-      background-color: #0e1525;
+      background-color: #2a325f;
       color: white;
       border: none;
       padding: 10px;
@@ -77,12 +77,12 @@
     }
 
     .btn-grey {
-      background-color: #2c354a;
+      background-color: #2a325f;
       color: white;
     }
 
     .btn-grey:hover {
-      background-color: #3a4460;
+      background-color: #22294e;
     }
 
     .btn-green {
@@ -342,7 +342,7 @@ body {
       <button id="clearBoard" class="btn-grey">Limpar Tabela</button>
       <button id="playButton" class="btn-green">Apostar</button>
 
-      <div><strong>Saldo:</strong> <span id="balance">0.00</span> USD</div>
+<!-- <div><strong>Saldo:</strong> <span id="balance">0.00</span> USD</div> -->
     </div>
 
     <div class="game-area">
@@ -358,12 +358,14 @@ body {
       // Integração saldo compartilhado
       let balance = parseFloat(localStorage.getItem("sharedBalance")) || 1000;
       const navbarBalance = document.getElementById("navbarBalance");
-      const balanceDisplay = document.getElementById("balance");
+      const balanceDisplay = document.getElementById("balance"); // pode continuar existindo
       const creditsInput = document.getElementById("credits");
       const depositBtn = document.getElementById("depositBtn");
       function updateBalance() {
         navbarBalance.textContent = "R$ " + balance.toFixed(2);
-        balanceDisplay.textContent = balance.toFixed(2);
+      if (balanceDisplay) {
+           balanceDisplay.textContent = balance.toFixed(2);
+        }
         localStorage.setItem("sharedBalance", balance.toFixed(2));
       }
       depositBtn.onclick = () => {

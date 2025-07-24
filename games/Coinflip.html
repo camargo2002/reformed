@@ -92,16 +92,16 @@ body {
 
 
     .game-container {
-      max-width: 820px;
+      max-width: 720px;
       margin: 30px auto;
       background-color: #0a1031;
       border-radius: 16px;
-      padding: 24px;
+      padding: 20px;
       text-align: center;
     }
 
     .bet-section input {
-      background-color: #334155;
+      background-color: #2a325f;
       color: white;
       border: none;
       border-radius: 8px;
@@ -111,14 +111,14 @@ body {
     }
 
     .btn, .cashout {
-      background: linear-gradient(to bottom, #22c55e, #16a34a);
+      background: linear-gradient(to bottom, #1a5ed9, #1650bd);
       border: none;
       color: white;
       padding: 10px 20px;
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      margin: 16px;
+      margin: 30px;
     }
 
     .choice-buttons button {
@@ -139,23 +139,6 @@ body {
 
     #headsBtn { background-color: #f97316; }
     #tailsBtn { background-color: #3b82f6; }
-
-    .coin3d-container {
-      perspective: 800px;
-      width: 140px;
-      height: 140px;
-      margin: 30px auto;
-    }
-
-    .coin3d {
-      width: 100%;
-      height: 100%;
-      border: 24px solid gray;
-      border-radius: 50%;
-      transform-style: preserve-3d;
-      transition: transform 0.6s ease;
-      position: relative;
-    }
 
     .history {
       display: flex;
@@ -180,6 +163,24 @@ body {
       font-size: 16px;
       color: #22c55e;
     }
+.coin-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.coin3d {
+  width: 140px;
+  height: 140px;
+  border: 32px solid gray;
+  border-radius: 50%;
+  transition: transform 0.6s ease;
+  margin-bottom: 20px;
+}
+
+
   </style>
 </head>
 <body>
@@ -189,7 +190,7 @@ body {
   </div>
   <div class="center">
     <div class="balance">
-      R$ <span id="navbarBalance">0.00</span>
+      <span id="navbarBalance">0.00</span>
       <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" />
     </div>
     <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
@@ -203,10 +204,9 @@ body {
 
   <div class="game-container">
     <h1>Coinflip</h1>
-    <div class="balance">Saldo: $<span id="balance">1000.00</span></div>
-
+<!-- <div class="balance">Saldo: $<span id="balance">1000.00</span></div> -->
     <div class="bet-section">
-      <label for="betAmount">Aposta: $</label>
+      <label for="betAmount">Aposta:</label>
       <input type="number" id="betAmount" step="0.01" value="10">
       <button class="btn" onclick="startGame()" id="betBtn">Apostar</button>
     </div>
@@ -216,11 +216,13 @@ body {
       <button id="tailsBtn" onclick="flip('tails')">Tails 🔷</button>
     </div>
 
-    <div class="coin3d-container">
-      <div class="coin3d" id="coin"></div>
-    </div>
+<div class="coin-wrapper">
+  <div class="coin3d-container">
+    <div class="coin3d" id="coin"></div>
+  </div>
+  <button class="cashout" onclick="cashout()" id="cashoutBtn" style="display:none;">Cashout</button>
+</div>
 
-    <button class="cashout" onclick="cashout()" id="cashoutBtn" style="display:none; margin-top: 20px;">Cashout</button>
 
     <div class="message" id="message"></div>
     <div class="message" id="profit"></div>
@@ -249,7 +251,8 @@ body {
     const depositBtn = document.getElementById("depositBtn");
 
     function updateBalanceDisplay() {
-      balanceEl.textContent = balance.toFixed(2);
+if (balanceEl) balanceEl.textContent = balance.toFixed(2);
+
       navbarBalance.textContent = "R$ " + balance.toFixed(2);
     }
 

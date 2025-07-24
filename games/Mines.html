@@ -32,7 +32,7 @@
     .tile {
       width: 60px;
       height: 60px;
-      background: #334155;
+      background: #090d20;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -43,7 +43,7 @@
     }
 
     .tile.revealed {
-      background: #475569;
+      background: #0d1330;
     }
 
     .controls {
@@ -84,7 +84,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: #1e293b;
+      background-color: #0f1436;
       color: #ffffff;
       padding: 20px 30px;
       border-radius: 12px;
@@ -101,12 +101,12 @@
     #popup-message {
       font-size: 18px;
       font-weight: bold;
-      color: #22c55e;
+      color: #ffffff;
       margin-bottom: 12px;
     }
 
     #close-popup {
-      background-color: #334155;
+      background-color: #0c102b;
       border: none;
       color: white;
       padding: 8px 16px;
@@ -117,7 +117,7 @@
     }
 
     #close-popup:hover {
-      background-color: #475569;
+      background-color: #11163b;
     }
 
 .stake-header {
@@ -219,16 +219,10 @@
       <div class="controls">
         <label for="betAmount">Aposta:</label>
         <input type="number" id="betAmount" placeholder="10" value="10">
-        <span>USD</span>
         <label for="mineCount">Mines:</label>
         <select id="mineCount"></select>
         <button id="startBtn">Apostar</button>
       </div>
-    
-      <div class="balance-text">
-        <strong>Saldo:</strong> <span id="balance">0.00</span> USD
-      </div>
-    
       <div id="board"></div>
     
       <div id="popup" class="popup hidden">
@@ -424,7 +418,10 @@
         const navbarBalance = document.getElementById("navbarBalance");
         const creditsInput = document.getElementById("credits");
         const depositBtn = document.getElementById("depositBtn");
-    
+        const balanceEl = document.getElementById('balance');
+        if (balanceEl) balanceEl.textContent = balance.toFixed(2);
+
+
         function updateNavbarBalance() {
           if (navbarBalance) navbarBalance.textContent = "R$ " + balance.toFixed(2);
         }
@@ -534,7 +531,7 @@
           const win = currentBet * multiplier;
           balance += win;
     
-          showPopup(`Você sacou ${win.toFixed(2)} USD com ${diamondsFound} diamantes!`);
+          showPopup(`Você sacou ${win.toFixed(2)} com ${diamondsFound} diamantes!`);
           revealAll();
           gameStarted = false;
           document.getElementById('startBtn').textContent = 'Apostar';
@@ -551,11 +548,13 @@
           });
         }
     
-        function updateBalance() {
-          document.getElementById('balance').textContent = balance.toFixed(2);
-          localStorage.setItem("sharedBalance", balance.toFixed(2));
-          updateNavbarBalance();
-        }
+function updateBalance() {
+  const balanceEl = document.getElementById('balance');
+  if (balanceEl) balanceEl.textContent = balance.toFixed(2);
+  localStorage.setItem("sharedBalance", balance.toFixed(2));
+  updateNavbarBalance();
+}
+
     
         window.onload = () => {
           const mineSelect = document.getElementById('mineCount');

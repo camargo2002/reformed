@@ -38,7 +38,7 @@
 
     .mode-selector button {
       flex: 1;
-      background-color: #334155;
+      background-color: #2a325f;
       border: none;
       color: #ffffff;
       padding: 10px;
@@ -49,7 +49,7 @@
     }
 
     .mode-selector button.active {
-      background-color: #475569;
+      background-color: #2a325f;
     }
 
     .shared-balance {
@@ -74,7 +74,7 @@
     .bet-input-group input {
       flex: 1;
       padding: 10px;
-      background-color: #334155;
+      background-color: #2a325f;
       border: none;
       border-radius: 6px;
       color: white;
@@ -95,7 +95,7 @@
       flex: 1;
       padding: 10px;
       border: none;
-      background-color: #334155;
+      background-color: #2a325f;
       color: white;
       font-weight: bold;
       border-radius: 6px;
@@ -105,7 +105,7 @@
     .bet-modifiers input {
       flex: 2;
       padding: 10px;
-      background-color: #334155;
+      background-color: #2a325f;
       border: none;
       border-radius: 6px;
       color: white;
@@ -116,7 +116,7 @@
     input[type="number"] {
       width: 100%;
       padding: 10px;
-      background-color: #334155;
+      background-color: #2a325f;
       border: none;
       color: white;
       border-radius: 6px;
@@ -128,8 +128,8 @@
     .start-button,
     .cashout-button {
       padding: 12px;
-      background-color: #22c55e;
-      color: #0f172a;
+      background-color: #1a5ed9;
+      color: #ffffff;
       font-weight: bold;
       border: none;
       border-radius: 8px;
@@ -139,8 +139,8 @@
     }
 
     .cashout-button {
-      background-color: #facc15;
-      color: #0f172a;
+      background-color: #123069;
+      color: #717e9b;
     }
 
     .start-button:hover,
@@ -181,15 +181,15 @@
     .tower-cell {
       width: 60px;
       height: 60px;
-      background-color: #334155;
-      border: 2px solid #475569;
+      background-color: #2a325f;
+      border: 2px solid #343e75;
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.2s;
     }
 
     .tower-cell:hover {
-      background-color: #475569;
+      background-color: #2a325f;
     }
 
     .tower-cell.revealed.success {
@@ -288,7 +288,7 @@ body {
   </div>
   <div class="center">
     <div class="balance">
-      <span id="navbarBalance">R$ 0.00</span>
+      <span id="navbarBalance">$ 0.00</span>
       <img src="https://img.icons8.com/ios-glyphs/20/ffffff/diamond.png" alt="Saldo">
     </div>
     <input id="credits" class="deposit-input" type="number" value="500" min="1" step="1">
@@ -303,14 +303,10 @@ body {
   <div class="tower-container">
     <!-- PAINEL LATERAL -->
     <div class="tower-sidebar">
-      <div class="shared-balance">
-        Saldo: <span id="balance">R$0.00</span>
-      </div>
-
       <label for="betAmount">Valor da Aposta</label>
       <div class="bet-input-group">
         <input type="number" id="betAmount" min="0.01" step="0.01" value="10">
-        <span class="currency">USD</span>
+        <span class="currency">BRL</span>
       </div>
       <div class="bet-modifiers">
         <button onclick="halfBet()">½</button>
